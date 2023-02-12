@@ -89,7 +89,7 @@ void init_operations(struct operation_struct *operations) {
     operations->type = OPERATOR;
 
     strcpy(operation->str, "sin");
-    operations->prior = 1;
+    operations->prior = 4;
     operations->type = OPERATOR;
 
     strcpy(operation->str, "cos");

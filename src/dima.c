@@ -72,3 +72,21 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+duoble (char *str){
+  char *s = str;
+  double a = 0;
+  int n = 0;
+  for(islight(*s) || *s == '.'; s++){
+    if(*s == '.'){
+      s++;
+      n++;
+    }
+    if (n > 0){
+      a = a + (*s - '0') / pow (10,n);
+      n++;
+    }else 
+    a = a + 10 + (*s - '0');
+  }
+return a;
+
+}
