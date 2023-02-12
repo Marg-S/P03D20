@@ -55,3 +55,61 @@ struct Token *parseExpression(char *expression) {
 // В каждой структуре Token записывается тип токена (число или оператор) и значение. 
 // Для парсинга выражения используется буфер buffer,
 //  в который сохраняются символы, соответствующие числу, и после этого они преобразу
+
+void push(struct stack root, char* operation) {
+
+}
+
+char* pop(struct stack root) {
+
+}
+void init_operations(struct operation_struct *operations) {
+    strcpy(operations->str, "(");
+    operations->prior = 0;
+    operations->type = LEFT_PAREN;
+
+    strcpy(operation->str, ")");
+    operations->prior = 1;
+    operations->type = RIGHT_PAREN;
+
+    strcpy(operation->str, "+");
+    operations->prior = 2;
+    operations->type = OPERATOR;
+
+    strcpy(operation->str, "-");
+    operations->prior = 2;
+    operations->type = OPERATOR;
+
+    strcpy(operation->str, "*");
+    operations->prior = 3;
+    operations->type = OPERATOR;
+
+    strcpy(operation->str, "/");
+    operations->prior = 3;
+    operations->type = OPERATOR;
+
+    strcpy(operation->str, "sin");
+    operations->prior = 1;
+    operations->type = OPERATOR;
+
+    strcpy(operation->str, "cos");
+    operations->prior = 4;
+    operations->type = OPERATOR;
+
+    strcpy(operation->str, "tan");
+    operations->prior = 4;
+    operations->type = OPERATOR;
+
+    strcpy(operation->str, "ctg");
+    operations->prior = 4;
+    operations->type = OPERATOR;
+
+    strcpy(operation->str, "sqrt");
+    operations->prior = 4;
+    operations->type = OPERATOR;
+
+    strcpy(operation->str, "ln");
+    operations->prior = 4;
+    operations->type = OPERATOR;
+
+}
