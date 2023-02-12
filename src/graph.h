@@ -5,8 +5,6 @@
 
 enum word_type { NUMBER, OPERATOR, FUNCTION, LEFT_PAREN, RIGHT_PAREN };
 
-// enum operation_type { UNARY, BINARY };
-
 struct word {
     enum word_type type;
     double value;

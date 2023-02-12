@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#include "queue.h"
+#include "myqueue.h"
+#include "parsing.h"
 #include "stack.h"
 
 #define WIDTH 80  // ширина отрисовки
@@ -20,7 +21,6 @@
 #define STEP_Y (Y_MAX - Y_MIN) * HEIGHT  // шаг отрисовки по y
 #define COUNT_OP 12                      //
 
-// struct node init(); // функция инициализации списка
 // char* get_rpn(char* str); // преобразование выражения в ОПЗ
 // double calc(char* str, double x); // расчёт Y
 
@@ -33,18 +33,22 @@ int main(int argc, char *argv[]) {
         struct word *operations = malloc(COUNT_OP * sizeof(struct word));
         init_operations(operations);
         //-----------------------------------------------------------
-        struct word *p = find_word(operations, "(");
+        struct word *p = find_word(operations, "sin");
         // if (p) printf("%d %d", p->type, (int)round(p->value));
         struct stack *top = NULL;
         push(&top, p);
-        struct word *pp = pop(&top);
-        if (pp) {
-            printf("stack: %d %d", pp->type, (int)round(pp->value));
-            // struct queue *first = NULL, *last = NULL;
-            // insert(pp, &last, &first);
-            // struct word *qq = delete (&first);
-            // if (pp) printf("\nqueue: %d %d", qq->type, (int)round(qq->value));
-        }
+        printf("\nstack: %s\n", (pop(&top))->str);
+        // struct word *pp = pop(&top);
+        // if (pp) {
+        //     printf("stack: %d %d %s", pp->type, (int)round(pp->value), pp->str);
+        //     struct queue *first = NULL, *last = NULL;
+        //     push_q(pp, &last, &first);
+        //     struct word *qq = pop_q (&first);
+        //     if (qq != NULL) printf("\nqueue: %d %d", qq->type, (int)round(qq->value));
+        // }
+        char *stroka = "2+2*3*(5-7)+cos(x)", str_rpn[strlen(stroka) * 2];
+        parsing(stroka, operations, str_rpn);
+        if (str_rpn) puts(str_rpn);
 
         //-----------------------------------------------------------
 
@@ -84,7 +88,7 @@ void display(char *input_str) {
             double x = X_MIN + j * STEP_X;
             double y = sin(cos(2 * x));
             // y = evaluateExpression(polish);
-            if (i == (int)((Y_MAX - y) / STEP_Y + Y_CENTER) && j >= X_CENTER)
+            if (i == (int)((Y_MAX - y) / STEP_Y))
                 printf("*");
             else
                 printf(".");
@@ -104,7 +108,6 @@ void init_operations(struct word *operations) {
     strcpy(p->str, ")");
     p->value = 1;
     p->type = RIGHT_PAREN;
-    operations++;
     p++;
 
     strcpy(p->str, "+");
@@ -128,7 +131,7 @@ void init_operations(struct word *operations) {
     p++;
 
     strcpy(p->str, "sin");
-    p->value = 1;
+    p->value = 4;
     p->type = FUNCTION;
     p++;
 
@@ -155,35 +158,4 @@ void init_operations(struct word *operations) {
     strcpy(p->str, "ln");
     p->value = 4;
     p->type = FUNCTION;
-}
-
-double calculate(char* expression) {
-  struct stack top = NULL;
-  char *token = strtok(expression, " ");
-  while (token != NULL) {
-    if (strcmp(token, "+") == 0) {
-      double operand2 = pop(&stack);
-      double operand1 = pop(&stack);
-      push(&stack, operand1 + operand2);
-    } else if (strcmp(token, "-") == 0) {
-      double operand2 = pop(&stack);
-      double operand1 = pop(&stack);
-      push(&stack, operand1 - operand2);
-    } else if (strcmp(token, "*") == 0) {
-      double operand2 = pop(&stack);
-      double operand1 = pop(&stack);
-      push(&stack, operand1 * operand2);
-    } else if (strcmp(token, "/") == 0) {
-      double operand2 = pop(&stack);
-      double operand1 = pop(&stack);
-      push(&stack, operand1 / operand2);
-    } else if (strcmp(token, "sin") == 0) {
-      double operand1 = pop(&stack);
-      push(&stack, sin(operand1));
-    } else {
-      push(&stack, atof(token));
-    }
-    token = strtok(NULL, " ");
-  }
-  return pop(&stack);
 }
