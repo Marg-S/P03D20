@@ -1,14 +1,18 @@
 #ifndef STACK
 #define STACK
 
-void push(struct stack root, char* operation);
-char* pop(struct stack root);
+#include "graph.h"
 
 
-struct stack {
-    char* operation;
-    struct stack* next;
+struct node {
+    struct operation_struct* operation;
+    struct node* next;
 };
+
+void push(struct node root, char* operation);
+struct token* pop(struct node root);
+struct token* peek(struct node root);
+
 
 
 #endif
