@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+//#include "queue.h"
 #include "stack.h"
 
 #define WIDTH 80  // ширина отрисовки
@@ -29,23 +30,46 @@ int main(int argc, char *argv[]) {
         printf("Usage: graph <expression>\n");
         ret = 1;
     } else {
-        // объявить и инициализировать массив допустимых операций и функций
-        // int n = 12;
-        // struct operation_struct *operations = malloc(n * sizeof(struct operation_struct));
-        // init_operations(operations);
+        struct word *operations = malloc(COUNT_OP * sizeof(struct word));
+        init_operations(operations);
+        //-----------------------------------------------------------
+        struct word *p = find_word(operations, "(");
+        // if (p) printf("%d %d", p->type, (int)round(p->value));
+        struct stack *top = NULL;
+        push(&top, p);
+        struct word *pp = pop(&top);
+        if (pp) {
+            printf("stack: %d %d", pp->type, (int)round(pp->value));
+            // struct queue *first = NULL, *last = NULL;
+            // insert(pp, &last, &first);
+            // struct word *qq = delete (&first);
+            // if (pp) printf("\nqueue: %d %d", qq->type, (int)round(qq->value));
+        }
 
-        display(argv[1]);
+        //-----------------------------------------------------------
+
+        // display(argv[1]);
 
         // char* rpn_str = get_rpn(); // преобразовать в ОПЗ
 
         // init(); // инициализировать стек
 
-        // display(rpn_str);
-
-        // free(operations);
+        free(operations);
     }
 
     return ret;
+}
+
+struct word *find_word(struct word *operations, char *str_find) {
+    struct word *p = operations, *find = NULL;
+    for (int i = 0; i < COUNT_OP; i++, p++) {
+        if (strcmp(p->str, str_find) == 0) {
+            find = p;
+            break;
+        }
+    }
+
+    return find;
 }
 
 void display(char *input_str) {
@@ -66,24 +90,100 @@ void display(char *input_str) {
                 printf(".");
         }
         printf("\n");
-    } 
-}
-
-void init_operations(struct operation_struct *operations) {
-    strcpy(operations->str, "(");
-    operations->prior = 0;
-    operations->type = LEFT_PAREN;
-}
-
-struct node *find_word(char *str, struct node *stack) {
-    struct node *p = stack, *find = NULL;
-    while (p) {
-        if ((p->operation)->str == str) {
-            find = p;
-            break;
-        }
-        p = p->next;
     }
+}
 
-    return find;
+void init_operations(struct word *operations) {
+    struct word *p = operations;
+
+    strcpy(p->str, "(");
+    p->value = 0;
+    p->type = LEFT_PAREN;
+    p++;
+
+    strcpy(p->str, ")");
+    p->value = 1;
+    p->type = RIGHT_PAREN;
+    operations++;
+    p++;
+
+    strcpy(p->str, "+");
+    p->value = 2;
+    p->type = OPERATOR;
+    p++;
+
+    strcpy(p->str, "-");
+    p->value = 2;
+    p->type = OPERATOR;
+    p++;
+
+    strcpy(p->str, "*");
+    p->value = 3;
+    p->type = OPERATOR;
+    p++;
+
+    strcpy(p->str, "/");
+    p->value = 3;
+    p->type = OPERATOR;
+    p++;
+
+    strcpy(p->str, "sin");
+    p->value = 1;
+    p->type = FUNCTION;
+    p++;
+
+    strcpy(p->str, "cos");
+    p->value = 4;
+    p->type = FUNCTION;
+    p++;
+
+    strcpy(p->str, "tan");
+    p->value = 4;
+    p->type = FUNCTION;
+    p++;
+
+    strcpy(p->str, "ctg");
+    p->value = 4;
+    p->type = OPERATOR;
+    p++;
+
+    strcpy(p->str, "sqrt");
+    p->value = 4;
+    p->type = FUNCTION;
+    p++;
+
+    strcpy(p->str, "ln");
+    p->value = 4;
+    p->type = FUNCTION;
+}
+
+double calculate(char* expression) {
+  struct stack top = NULL;
+  char *token = strtok(expression, " ");
+  while (token != NULL) {
+    if (strcmp(token, "+") == 0) {
+      double operand2 = pop(&stack);
+      double operand1 = pop(&stack);
+      push(&stack, operand1 + operand2);
+    } else if (strcmp(token, "-") == 0) {
+      double operand2 = pop(&stack);
+      double operand1 = pop(&stack);
+      push(&stack, operand1 - operand2);
+    } else if (strcmp(token, "*") == 0) {
+      double operand2 = pop(&stack);
+      double operand1 = pop(&stack);
+      push(&stack, operand1 * operand2);
+    } else if (strcmp(token, "/") == 0) {
+      double operand2 = pop(&stack);
+      double operand1 = pop(&stack);
+      push(&stack, operand1 / operand2);
+    } else if (strcmp(token, "sin") == 0) {
+      double operand1 = pop(&stack);
+      push(&stack, sin(operand1));
+    } else {
+      push(&stack, atof(token));
+    }
+    token = strtok(NULL, " ");
+  }
+  return pop(&stack);
 }
